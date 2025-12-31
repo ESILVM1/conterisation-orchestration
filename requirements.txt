@@ -1,1 +1,14 @@
+# Django Framework
+Django==3.0.2
 
+# Serveur WSGI pour la production
+gunicorn==20.1.0
+
+# Driver PostgreSQL
+psycopg2-binary==2.9.3
+
+# Traitement d'images (pour ImageField)
+Pillow==9.5.0
+
+# Service des fichiers statiques
+whitenoise==6.2.0
