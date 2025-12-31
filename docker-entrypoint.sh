@@ -1,13 +1,9 @@
 #!/bin/bash
 set -e
 
-if [ "$DATABASE" = "postgresql" ]; then
-    echo "Waiting for postgres..."
-    while ! nc -z "$DB_HOST" "$DB_PORT"; do
-        sleep 0.1
-    done
-    echo "PostgreSQL started"
-fi
+# Ensure db directory exists with correct permissions for SQLite
+mkdir -p /app/db
+chmod 777 /app/db 2>/dev/null || true
 
 echo "Running migrations..."
 python manage.py migrate --noinput
@@ -16,4 +12,3 @@ echo "Collecting static files..."
 python manage.py collectstatic --noinput --clear
 
 exec "$@"
-

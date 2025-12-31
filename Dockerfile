@@ -40,6 +40,10 @@ RUN chmod +x /docker-entrypoint.sh
 
 COPY --chown=django:django . .
 
+# Create directories with proper permissions before switching user
+RUN mkdir -p /app/logs /app/db /app/staticfiles && \
+    chown -R django:django /app
+
 USER django
 
 EXPOSE 8000
