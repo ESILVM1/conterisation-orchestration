@@ -1,85 +1,158 @@
 import json
+import logging
+import re
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.core.validators import EmailValidator
 from .models import *
 
-def cookieCart(request):
+logger = logging.getLogger(__name__)
 
-	#Create empty cart for now for non-logged in user
+def cookieCart(request):
+	"""Parse cart from cookies with proper error handling"""
 	try:
-		cart = json.loads(request.COOKIES['cart'])
-	except:
+		cart = json.loads(request.COOKIES.get('cart', '{}'))
+	except (json.JSONDecodeError, KeyError) as e:
+		logger.warning(f"Invalid cart cookie: {str(e)}")
 		cart = {}
-		print('CART:', cart)
 
 	items = []
-	order = {'get_cart_total':0, 'get_cart_items':0, 'shipping':False}
+	order = {'get_cart_total': 0, 'get_cart_items': 0, 'shipping': False}
 	cartItems = order['get_cart_items']
 
-	for i in cart:
-		#We use try block to prevent items in cart that may have been removed from causing error
-		try:	
-			if(cart[i]['quantity']>0): #items with negative quantity = lot of freebies  
-				cartItems += cart[i]['quantity']
-
-				product = Product.objects.get(id=i)
-				total = (product.price * cart[i]['quantity'])
-
+	for product_id_str in cart:
+		try:
+			# Validate product ID is an integer
+			product_id = int(product_id_str)
+			# Use original string key to access cart dict
+			quantity = int(cart[product_id_str].get('quantity', 0))
+			
+			# Validate quantity is positive
+			if quantity <= 0:
+				continue
+			
+			try:
+				product = Product.objects.get(id=product_id)
+				total = product.price * quantity
+				
 				order['get_cart_total'] += total
-				order['get_cart_items'] += cart[i]['quantity']
-
+				order['get_cart_items'] += quantity
+				
 				item = {
-				'id':product.id,
-				'product':{'id':product.id,'name':product.name, 'price':product.price, 
-				'imageURL':product.imageURL}, 'quantity':cart[i]['quantity'],
-				'digital':product.digital,'get_total':total,
+					'id': product.id,
+					'product': {
+						'id': product.id,
+						'name': product.name,
+						'price': product.price,
+						'imageURL': product.imageURL
+					},
+					'quantity': quantity,
+					'digital': product.digital,
+					'get_total': total,
 				}
 				items.append(item)
-
-				if product.digital == False:
+				
+				if not product.digital:
 					order['shipping'] = True
-		except:
-			pass
+					
+			except Product.DoesNotExist:
+				logger.warning(f"Product {product_id} not found in cart")
+				continue
+			except (ValueError, TypeError) as e:
+				logger.warning(f"Invalid product data for {product_id}: {str(e)}")
+				continue
+					
+		except (ValueError, TypeError, KeyError) as e:
+			logger.warning(f"Invalid cart item {product_id_str}: {str(e)}")
+			continue
 			
-	return {'cartItems':cartItems ,'order':order, 'items':items}
+	return {'cartItems': cartItems, 'order': order, 'items': items}
 
 def cartData(request):
+	"""Get cart data for authenticated or guest user"""
 	if request.user.is_authenticated:
-		customer = request.user.customer
-		order, created = Order.objects.get_or_create(customer=customer, complete=False)
-		items = order.orderitem_set.all()
-		cartItems = order.get_cart_items
+		try:
+			customer = request.user.customer
+			order, created = Order.objects.get_or_create(customer=customer, complete=False)
+			items = order.orderitem_set.all()
+			cartItems = order.get_cart_items
+		except AttributeError:
+			# User has no customer profile, use cookie cart
+			cookieData = cookieCart(request)
+			cartItems = cookieData['cartItems']
+			order = cookieData['order']
+			items = cookieData['items']
 	else:
 		cookieData = cookieCart(request)
 		cartItems = cookieData['cartItems']
 		order = cookieData['order']
 		items = cookieData['items']
 
-	return {'cartItems':cartItems ,'order':order, 'items':items}
+	return {'cartItems': cartItems, 'order': order, 'items': items}
 
 	
 def guestOrder(request, data):
-	name = data['form']['name']
-	email = data['form']['email']
-
+	"""Create order for guest user with proper validation"""
+	form_data = data.get('form', {})
+	
+	name = form_data.get('name', '').strip()
+	email = form_data.get('email', '').strip()
+	
+	# Validate name
+	if not name or len(name) < 2 or len(name) > 200:
+		raise ValidationError('Invalid name: must be between 2 and 200 characters')
+	
+	# Validate email
+	email_validator = EmailValidator()
+	try:
+		email_validator(email)
+	except ValidationError:
+		raise ValidationError('Invalid email address')
+	
+	# Sanitize name (remove potentially dangerous characters)
+	name = re.sub(r'[<>"\']', '', name)
+	
 	cookieData = cookieCart(request)
 	items = cookieData['items']
-
-	customer, created = Customer.objects.get_or_create(
-			email=email,
-			)
-	customer.name = name
-	customer.save()
-
-	order = Order.objects.create(
-		customer=customer,
-		complete=False,
-		)
-
+	
+	try:
+		customer, created = Customer.objects.get_or_create(email=email)
+		customer.name = name
+		customer.save()
+	except Exception as e:
+		logger.error(f"Error creating customer: {str(e)}")
+		raise
+	
+	try:
+		order = Order.objects.create(customer=customer, complete=False)
+	except Exception as e:
+		logger.error(f"Error creating order: {str(e)}")
+		raise
+	
+	# Create order items with validation
+	if not items:
+		raise ValidationError('Cart is empty')
+	
 	for item in items:
-		product = Product.objects.get(id=item['id'])
-		orderItem = OrderItem.objects.create(
-			product=product,
-			order=order,
-			quantity=(item['quantity'] if item['quantity']>0 else -1*item['quantity']), # negative quantity = freebies
-		)
+		try:
+			product = Product.objects.get(id=item['id'])
+			quantity = max(1, int(item.get('quantity', 1)))  # Minimum 1, validate type
+			# Limit maximum quantity to prevent abuse
+			quantity = min(quantity, 100)
+			
+			OrderItem.objects.create(
+				product=product,
+				order=order,
+				quantity=quantity,
+			)
+		except Product.DoesNotExist:
+			logger.warning(f"Product {item.get('id')} not found when creating guest order")
+			continue
+		except (ValueError, TypeError) as e:
+			logger.warning(f"Invalid quantity for product {item.get('id')}: {str(e)}")
+			continue
+		except Exception as e:
+			logger.error(f"Error creating order item: {str(e)}")
+			continue
+	
 	return customer, order
 
