@@ -300,25 +300,26 @@ h1 {
 }
 
 .social-icon {
-	color: #ffffff;
-	background: rgba(255, 255, 255, 0.1);
+	color: #1a202c;
+	background: #ffffff;
 	text-decoration: none;
 	transition: all 0.3s ease;
 	font-size: 0.95rem;
 	display: inline-block;
 	padding: 10px 15px;
 	border-radius: 8px;
-	border: 2px solid transparent;
+	border: 2px solid #ffffff;
 	font-weight: 600;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .social-icon:hover {
 	color: #ffffff;
-	background: linear-gradient(135deg, #4299e1 0%, #667eea 100%);
+	background: #1a202c;
 	transform: translateX(5px);
 	text-decoration: none;
-	border-color: rgba(255, 255, 255, 0.3);
-	box-shadow: 0 4px 15px rgba(66, 153, 225, 0.4);
+	border-color: #ffffff;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
 .footer-links {
@@ -331,24 +332,25 @@ h1 {
 }
 
 .footer-links a {
-	color: #ffffff;
-	background: rgba(255, 255, 255, 0.05);
+	color: #1a202c;
+	background: #ffffff;
 	text-decoration: none;
 	transition: all 0.3s ease;
 	display: inline-block;
 	padding: 8px 15px;
 	border-radius: 8px;
-	border: 2px solid transparent;
+	border: 2px solid #ffffff;
 	font-weight: 600;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .footer-links a:hover {
 	color: #ffffff;
-	background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+	background: #1a202c;
 	transform: translateX(5px);
 	text-decoration: none;
-	border-color: rgba(255, 255, 255, 0.3);
-	box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);
+	border-color: #ffffff;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
 .footer-contact {
@@ -837,7 +839,7 @@ html {
 	left: -20px;
 	opacity: 0;
 	transition: all 0.3s ease;
-	color: #ffffff;
+	color: #1a202c;
 	font-weight: bold;
 }
 
@@ -845,6 +847,7 @@ html {
 .social-icon:hover::before {
 	left: -15px;
 	opacity: 1;
+	color: #ffffff;
 }
 
 /* Pulse effect for special badges */
