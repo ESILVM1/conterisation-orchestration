@@ -1,25 +1,258 @@
 {% extends 'store/main.html' %}
 {% load static %}
 {% block content %}
-	<div class="row">
+	<!-- Hero Section -->
+	<div class="hero-banner">
+		<h1 class="hero-title">🛍️ Découvrez nos produits</h1>
+		<p class="hero-subtitle">Des produits de qualité sélectionnés avec soin pour vous</p>
+	</div>
+
+	<!-- Search and Filter Section -->
+	<div class="search-filter-section">
+		<div class="search-container">
+			<div class="search-box">
+				<i class="fas fa-search search-icon"></i>
+				<input type="text" id="searchInput" class="search-input" placeholder="Rechercher un produit...">
+				<button class="search-clear" id="clearSearch" title="Effacer">
+					<i class="fas fa-times"></i>
+				</button>
+			</div>
+		</div>
+		
+		<div class="filter-container">
+			<div class="filter-group">
+				<label class="filter-label">
+					<i class="fas fa-filter"></i> Catégorie:
+				</label>
+				<select id="categoryFilter" class="filter-select">
+					<option value="all">Toutes les catégories</option>
+					<option value="digital">Produits numériques</option>
+					<option value="physical">Produits physiques</option>
+				</select>
+			</div>
+			
+			<div class="filter-group">
+				<label class="filter-label">
+					<i class="fas fa-sort-amount-down"></i> Prix:
+				</label>
+				<select id="priceFilter" class="filter-select">
+					<option value="all">Tous les prix</option>
+					<option value="low">Moins de $20</option>
+					<option value="medium">$20 - $50</option>
+					<option value="high">Plus de $50</option>
+				</select>
+			</div>
+			
+			<div class="filter-group">
+				<label class="filter-label">
+					<i class="fas fa-sort"></i> Trier par:
+				</label>
+				<select id="sortFilter" class="filter-select">
+					<option value="default">Par défaut</option>
+					<option value="name-asc">Nom (A-Z)</option>
+					<option value="name-desc">Nom (Z-A)</option>
+					<option value="price-asc">Prix croissant</option>
+					<option value="price-desc">Prix décroissant</option>
+				</select>
+			</div>
+			
+			<button class="btn btn-outline-secondary btn-reset" id="resetFilters">
+				<i class="fas fa-redo"></i> Réinitialiser
+			</button>
+		</div>
+		
+		<div class="results-info">
+			<span id="resultsCount">Affichage de tous les produits</span>
+		</div>
+	</div>
+
+	<!-- Products Grid -->
+	<div class="row" id="productsGrid">
 		{% for product in products %}
 		<div class="col-lg-4">
-			<img class="thumbnail" src="{{product.imageURL}}">
-			<div class="box-element product">
-				<h6><strong>{{product.name}}</strong></h6>
-				<hr>
-
-				<div style="display: flex; gap:1em; justify-content: space-between;">
-					<div>
-						<button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
-						<a class="btn btn-outline-success" href="#">View</a>		
-					</div>
+			<div class="product-card">
+				<!-- Badge -->
+				<div class="product-badges">
+					{% if product.digital %}
+						<span class="badge badge-digital">✨ Numérique</span>
+					{% else %}
+						<span class="badge badge-physical">📦 Physique</span>
+					{% endif %}
+					<span class="badge badge-new">🆕 Nouveau</span>
+				</div>
 				
-					<h4><strong>${{product.price}}</strong></h4>
+				<img class="thumbnail" src="{{product.imageURL}}">
+				
+				<div class="box-element product">
+					<h6><strong>{{product.name}}</strong></h6>
+					
+					<!-- Rating Stars -->
+					<div class="product-rating">
+						<span class="stars">★★★★★</span>
+						<span class="rating-count">(4.8/5)</span>
+					</div>
+					
+					<hr>
+					
+					<!-- Product Description -->
+					<p class="product-description">
+						{% if product.digital %}
+							📚 Formation numérique téléchargeable instantanément. Accès illimité à vie.
+						{% else %}
+							📦 Produit physique de haute qualité. Livraison rapide et gratuite dès 50€.
+						{% endif %}
+					</p>
+
+					<!-- Features List -->
+					<ul class="product-features">
+						<li>✓ Garantie satisfaction</li>
+						<li>✓ Support client 24/7</li>
+						{% if not product.digital %}
+						<li>✓ Retour gratuit sous 30j</li>
+						{% endif %}
+					</ul>
+
+					<!-- Price and Actions -->
+					<div class="product-footer">
+						<div class="price-section">
+							<span class="price-label">Prix:</span>
+							<h4 class="product-price">${{product.price}}</h4>
+						</div>
+						<div class="product-actions">
+							<button data-product="{{product.id}}" data-action="add" class="btn btn-primary add-btn update-cart">
+								<i class="fas fa-cart-plus"></i> Ajouter
+							</button>
+							<button class="btn btn-outline-info btn-view" title="Voir les détails">
+								<i class="fas fa-eye"></i>
+							</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 		{% endfor %}
 	</div>
 
+	<!-- Testimonials Section -->
+	<div class="testimonials-section">
+		<h2 class="section-title">💬 Ce que disent nos clients</h2>
+		<div class="testimonials-grid">
+			<div class="testimonial-card">
+				<div class="testimonial-header">
+					<div class="testimonial-avatar">
+						<i class="fas fa-user-circle"></i>
+					</div>
+					<div class="testimonial-info">
+						<h5>Marie Dubois</h5>
+						<div class="testimonial-rating">
+							<span class="stars">★★★★★</span>
+						</div>
+					</div>
+				</div>
+				<p class="testimonial-text">"Excellente boutique en ligne ! Les produits sont de qualité et la livraison est super rapide. Je recommande vivement !"</p>
+				<span class="testimonial-date">Il y a 2 jours</span>
+			</div>
+
+			<div class="testimonial-card">
+				<div class="testimonial-header">
+					<div class="testimonial-avatar">
+						<i class="fas fa-user-circle"></i>
+					</div>
+					<div class="testimonial-info">
+						<h5>Pierre Martin</h5>
+						<div class="testimonial-rating">
+							<span class="stars">★★★★★</span>
+						</div>
+					</div>
+				</div>
+				<p class="testimonial-text">"Service client au top ! J'ai eu une question et j'ai reçu une réponse en quelques minutes. Très satisfait de mon achat."</p>
+				<span class="testimonial-date">Il y a 1 semaine</span>
+			</div>
+
+			<div class="testimonial-card">
+				<div class="testimonial-header">
+					<div class="testimonial-avatar">
+						<i class="fas fa-user-circle"></i>
+					</div>
+					<div class="testimonial-info">
+						<h5>Sophie Bernard</h5>
+						<div class="testimonial-rating">
+							<span class="stars">★★★★★</span>
+						</div>
+					</div>
+				</div>
+				<p class="testimonial-text">"Les formations numériques sont excellentes ! Contenu de qualité et accès immédiat. Je suis ravie de mon investissement."</p>
+				<span class="testimonial-date">Il y a 2 semaines</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- FAQ Section -->
+	<div class="faq-section">
+		<h2 class="section-title">❓ Questions fréquentes</h2>
+		<div class="faq-container">
+			<div class="faq-item">
+				<button class="faq-question">
+					<span><i class="fas fa-shipping-fast"></i> Quels sont les délais de livraison ?</span>
+					<i class="fas fa-chevron-down faq-icon"></i>
+				</button>
+				<div class="faq-answer">
+					<p>Nous livrons sous 2-3 jours ouvrés pour la France métropolitaine. La livraison est gratuite pour toute commande supérieure à 50€. Pour les produits numériques, l'accès est immédiat après l'achat.</p>
+				</div>
+			</div>
+
+			<div class="faq-item">
+				<button class="faq-question">
+					<span><i class="fas fa-undo-alt"></i> Quelle est votre politique de retour ?</span>
+					<i class="fas fa-chevron-down faq-icon"></i>
+				</button>
+				<div class="faq-answer">
+					<p>Vous disposez de 30 jours pour retourner un produit physique si vous n'êtes pas satisfait. Le retour est gratuit et vous serez remboursé intégralement. Les produits numériques ne sont pas remboursables après téléchargement.</p>
+				</div>
+			</div>
+
+			<div class="faq-item">
+				<button class="faq-question">
+					<span><i class="fas fa-credit-card"></i> Quels moyens de paiement acceptez-vous ?</span>
+					<i class="fas fa-chevron-down faq-icon"></i>
+				</button>
+				<div class="faq-answer">
+					<p>Nous acceptons les cartes bancaires (Visa, Mastercard, American Express), PayPal, et Apple Pay. Tous les paiements sont sécurisés et cryptés.</p>
+				</div>
+			</div>
+
+			<div class="faq-item">
+				<button class="faq-question">
+					<span><i class="fas fa-shield-alt"></i> Mes informations sont-elles sécurisées ?</span>
+					<i class="fas fa-chevron-down faq-icon"></i>
+				</button>
+				<div class="faq-answer">
+					<p>Absolument ! Nous utilisons le protocole SSL pour crypter toutes vos données. Vos informations personnelles et bancaires sont protégées selon les normes les plus strictes de sécurité.</p>
+				</div>
+			</div>
+
+			<div class="faq-item">
+				<button class="faq-question">
+					<span><i class="fas fa-headset"></i> Comment contacter le support client ?</span>
+					<i class="fas fa-chevron-down faq-icon"></i>
+				</button>
+				<div class="faq-answer">
+					<p>Notre équipe est disponible 24/7 par email à contact@ecom.fr, par téléphone au +33 1 23 45 67 89, ou via le chat en direct sur notre site. Nous répondons généralement en moins de 2 heures.</p>
+				</div>
+			</div>
+
+			<div class="faq-item">
+				<button class="faq-question">
+					<span><i class="fas fa-gift"></i> Proposez-vous des codes promo ?</span>
+					<i class="fas fa-chevron-down faq-icon"></i>
+				</button>
+				<div class="faq-answer">
+					<p>Oui ! Inscrivez-vous à notre newsletter pour recevoir des codes promo exclusifs et être informé en avant-première de nos promotions. Vous recevrez 10% de réduction sur votre première commande.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="{% static 'js/filter.js' %}"></script>
+	<script src="{% static 'js/faq.js' %}"></script>
 {% endblock content %}
