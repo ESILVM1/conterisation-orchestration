@@ -3,50 +3,134 @@
 {% block content %}
 	<div class="row">
 		<div class="col-lg-12">
-			<div class="box-element">
+			<!-- Cart Header -->
+			<div class="cart-header">
+				<h2><i class="fas fa-shopping-cart"></i> Mon Panier</h2>
+				<a class="btn btn-outline-dark" href="{% url 'store' %}">
+					<i class="fas fa-arrow-left"></i> Continuer mes achats
+				</a>
+			</div>
 
-				<a  class="btn btn-outline-dark" href="{% url 'store' %}">&#x2190; Continue Shopping</a>
-
-				<br>
-				<br>
-				<table class="table">
-					<tr>
-						<th><h5>Items: <strong>{{order.get_cart_items}}</strong></h5></th>
-						<th><h5>Total:<strong> ${{order.get_cart_total|floatformat:2}}</strong></h5></th>
-						<th>
-							<a  style="float:right; margin:5px;" class="btn btn-success" href="{% url 'checkout' %}">Checkout</a>
-						</th>
-					</tr>
-				</table>
-
+			{% if items %}
+			<!-- Cart Summary -->
+			<div class="box-element cart-summary">
+				<div class="summary-content">
+					<div class="summary-item">
+						<i class="fas fa-box"></i>
+						<div>
+							<span class="summary-label">Articles</span>
+							<strong class="summary-value">{{order.get_cart_items}}</strong>
+						</div>
+					</div>
+					<div class="summary-item">
+						<i class="fas fa-tags"></i>
+						<div>
+							<span class="summary-label">Sous-total</span>
+							<strong class="summary-value">${{order.get_cart_total|floatformat:2}}</strong>
+						</div>
+					</div>
+					<div class="summary-item">
+						<i class="fas fa-truck"></i>
+						<div>
+							<span class="summary-label">Livraison</span>
+							<strong class="summary-value text-success">GRATUITE</strong>
+						</div>
+					</div>
+					<div class="summary-item total-section">
+						<div>
+							<span class="summary-label">Total</span>
+							<h3 class="summary-total">${{order.get_cart_total|floatformat:2}}</h3>
+						</div>
+						<a class="btn btn-success btn-checkout" href="{% url 'checkout' %}">
+							<i class="fas fa-lock"></i> Passer la commande
+						</a>
+					</div>
+				</div>
 			</div>
 
 			<br>
+			<!-- Cart Items -->
 			<div class="box-element">
-				<div class="cart-row">
+				<div class="cart-row cart-header-row">
 					<div style="flex:2"></div>
-					<div style="flex:2"><strong>Item</strong></div>
-					<div style="flex:1"><strong>Price</strong></div>
-					<div style="flex:1"><strong>Quantity</strong></div>
-					<div style="flex:1"><strong>Total</strong></div>
+					<div style="flex:2"><strong><i class="fas fa-tag"></i> Produit</strong></div>
+					<div style="flex:1"><strong><i class="fas fa-dollar-sign"></i> Prix</strong></div>
+					<div style="flex:1"><strong><i class="fas fa-sort-numeric-up"></i> Quantité</strong></div>
+					<div style="flex:1"><strong><i class="fas fa-calculator"></i> Total</strong></div>
 				</div>
 				{% for item in items %}
-				<div class="cart-row">
-					<div style="flex:2"><img class="row-image" src="{{item.product.imageURL}}"></div>
-					<div style="flex:2"><p>{{item.product.name}}</p></div>
-					<div style="flex:1"><p>${{item.product.price|floatformat:2}}</p></div>
+				<div class="cart-row cart-item-row">
+					<div style="flex:2" class="cart-image-container">
+						<img class="row-image" src="{{item.product.imageURL}}">
+					</div>
+					<div style="flex:2" class="cart-product-info">
+						<p class="product-name">{{item.product.name}}</p>
+						<span class="product-type-badge">
+							{% if item.product.digital %}
+								<i class="fas fa-download"></i> Numérique
+							{% else %}
+								<i class="fas fa-box"></i> Physique
+							{% endif %}
+						</span>
+					</div>
 					<div style="flex:1">
-						<p class="quantity">{{item.quantity}}</p>
-						<div class="quantity">
-							<img data-product="{{item.product.id}}" data-action="add" class="chg-quantity update-cart" src="{% static  'images/arrow-up.png' %}">
-					
-							<img data-product="{{item.product.id}}" data-action="remove" class="chg-quantity update-cart" src="{% static  'images/arrow-down.png' %}">
+						<p class="cart-price">${{item.product.price|floatformat:2}}</p>
+					</div>
+					<div style="flex:1" class="quantity-controls">
+						<p class="quantity-display">{{item.quantity}}</p>
+						<div class="quantity-buttons">
+							<button data-product="{{item.product.id}}" data-action="add" 
+									class="quantity-btn quantity-btn-up update-cart" title="Augmenter">
+								<i class="fas fa-plus"></i>
+							</button>
+							<button data-product="{{item.product.id}}" data-action="remove" 
+									class="quantity-btn quantity-btn-down update-cart" title="Diminuer">
+								<i class="fas fa-minus"></i>
+							</button>
 						</div>
 					</div>
-					<div style="flex:1"><p>${{item.get_total|floatformat:2}}</p></div>
+					<div style="flex:1">
+						<p class="cart-total">${{item.get_total|floatformat:2}}</p>
+					</div>
 				</div>
 				{% endfor %}
 			</div>
+
+			<!-- Promotional Banner -->
+			<div class="promo-banner">
+				<i class="fas fa-gift"></i>
+				<p><strong>Livraison gratuite</strong> pour toute commande supérieure à 50€ !</p>
+			</div>
+
+			{% else %}
+			<!-- Empty Cart Message -->
+			<div class="empty-cart-container">
+				<div class="empty-cart-content">
+					<div class="empty-cart-icon">
+						<i class="fas fa-shopping-cart"></i>
+					</div>
+					<h3>Votre panier est vide</h3>
+					<p>Découvrez notre sélection de produits et ajoutez vos articles préférés à votre panier !</p>
+					<div class="empty-cart-features">
+						<div class="feature-item">
+							<i class="fas fa-truck"></i>
+							<span>Livraison gratuite dès 50€</span>
+						</div>
+						<div class="feature-item">
+							<i class="fas fa-shield-alt"></i>
+							<span>Paiement sécurisé</span>
+						</div>
+						<div class="feature-item">
+							<i class="fas fa-undo"></i>
+							<span>Retour gratuit sous 30j</span>
+						</div>
+					</div>
+					<a href="{% url 'store' %}" class="btn btn-primary btn-lg btn-shop-now">
+						<i class="fas fa-shopping-bag"></i> Découvrir la boutique
+					</a>
+				</div>
+			</div>
+			{% endif %}
 		</div>
 	</div>
 {% endblock content %}
