@@ -1,21 +1,73 @@
 {% extends 'store/main.html' %}
 {% load static %}
 {% block content %}
+	<!-- Hero Section -->
+	<div class="hero-banner">
+		<h1 class="hero-title">🛍️ Découvrez nos produits</h1>
+		<p class="hero-subtitle">Des produits de qualité sélectionnés avec soin pour vous</p>
+	</div>
+
+	<!-- Products Grid -->
 	<div class="row">
 		{% for product in products %}
 		<div class="col-lg-4">
-			<img class="thumbnail" src="{{product.imageURL}}">
-			<div class="box-element product">
-				<h6><strong>{{product.name}}</strong></h6>
-				<hr>
-
-				<div style="display: flex; gap:1em; justify-content: space-between;">
-					<div>
-						<button data-product="{{product.id}}" data-action="add" class="btn btn-outline-secondary add-btn update-cart">Add to Cart</button>
-						<a class="btn btn-outline-success" href="#">View</a>		
-					</div>
+			<div class="product-card">
+				<!-- Badge -->
+				<div class="product-badges">
+					{% if product.digital %}
+						<span class="badge badge-digital">✨ Numérique</span>
+					{% else %}
+						<span class="badge badge-physical">📦 Physique</span>
+					{% endif %}
+					<span class="badge badge-new">🆕 Nouveau</span>
+				</div>
 				
-					<h4><strong>${{product.price}}</strong></h4>
+				<img class="thumbnail" src="{{product.imageURL}}">
+				
+				<div class="box-element product">
+					<h6><strong>{{product.name}}</strong></h6>
+					
+					<!-- Rating Stars -->
+					<div class="product-rating">
+						<span class="stars">★★★★★</span>
+						<span class="rating-count">(4.8/5)</span>
+					</div>
+					
+					<hr>
+					
+					<!-- Product Description -->
+					<p class="product-description">
+						{% if product.digital %}
+							📚 Formation numérique téléchargeable instantanément. Accès illimité à vie.
+						{% else %}
+							📦 Produit physique de haute qualité. Livraison rapide et gratuite dès 50€.
+						{% endif %}
+					</p>
+
+					<!-- Features List -->
+					<ul class="product-features">
+						<li>✓ Garantie satisfaction</li>
+						<li>✓ Support client 24/7</li>
+						{% if not product.digital %}
+						<li>✓ Retour gratuit sous 30j</li>
+						{% endif %}
+					</ul>
+
+					<!-- Price and Actions -->
+					<div class="product-footer">
+						<div class="price-section">
+							<span class="price-label">Prix:</span>
+							<h4 class="product-price">${{product.price}}</h4>
+						</div>
+						<div class="product-actions">
+							<button data-product="{{product.id}}" data-action="add" class="btn btn-primary add-btn update-cart">
+								<i class="fas fa-cart-plus"></i> Ajouter
+							</button>
+							<button class="btn btn-outline-info btn-view" title="Voir les détails">
+								<i class="fas fa-eye"></i>
+							</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
