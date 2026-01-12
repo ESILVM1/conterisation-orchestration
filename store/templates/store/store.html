@@ -133,5 +133,126 @@
 		{% endfor %}
 	</div>
 
+	<!-- Testimonials Section -->
+	<div class="testimonials-section">
+		<h2 class="section-title">💬 Ce que disent nos clients</h2>
+		<div class="testimonials-grid">
+			<div class="testimonial-card">
+				<div class="testimonial-header">
+					<div class="testimonial-avatar">
+						<i class="fas fa-user-circle"></i>
+					</div>
+					<div class="testimonial-info">
+						<h5>Marie Dubois</h5>
+						<div class="testimonial-rating">
+							<span class="stars">★★★★★</span>
+						</div>
+					</div>
+				</div>
+				<p class="testimonial-text">"Excellente boutique en ligne ! Les produits sont de qualité et la livraison est super rapide. Je recommande vivement !"</p>
+				<span class="testimonial-date">Il y a 2 jours</span>
+			</div>
+
+			<div class="testimonial-card">
+				<div class="testimonial-header">
+					<div class="testimonial-avatar">
+						<i class="fas fa-user-circle"></i>
+					</div>
+					<div class="testimonial-info">
+						<h5>Pierre Martin</h5>
+						<div class="testimonial-rating">
+							<span class="stars">★★★★★</span>
+						</div>
+					</div>
+				</div>
+				<p class="testimonial-text">"Service client au top ! J'ai eu une question et j'ai reçu une réponse en quelques minutes. Très satisfait de mon achat."</p>
+				<span class="testimonial-date">Il y a 1 semaine</span>
+			</div>
+
+			<div class="testimonial-card">
+				<div class="testimonial-header">
+					<div class="testimonial-avatar">
+						<i class="fas fa-user-circle"></i>
+					</div>
+					<div class="testimonial-info">
+						<h5>Sophie Bernard</h5>
+						<div class="testimonial-rating">
+							<span class="stars">★★★★★</span>
+						</div>
+					</div>
+				</div>
+				<p class="testimonial-text">"Les formations numériques sont excellentes ! Contenu de qualité et accès immédiat. Je suis ravie de mon investissement."</p>
+				<span class="testimonial-date">Il y a 2 semaines</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- FAQ Section -->
+	<div class="faq-section">
+		<h2 class="section-title">❓ Questions fréquentes</h2>
+		<div class="faq-container">
+			<div class="faq-item">
+				<button class="faq-question">
+					<span><i class="fas fa-shipping-fast"></i> Quels sont les délais de livraison ?</span>
+					<i class="fas fa-chevron-down faq-icon"></i>
+				</button>
+				<div class="faq-answer">
+					<p>Nous livrons sous 2-3 jours ouvrés pour la France métropolitaine. La livraison est gratuite pour toute commande supérieure à 50€. Pour les produits numériques, l'accès est immédiat après l'achat.</p>
+				</div>
+			</div>
+
+			<div class="faq-item">
+				<button class="faq-question">
+					<span><i class="fas fa-undo-alt"></i> Quelle est votre politique de retour ?</span>
+					<i class="fas fa-chevron-down faq-icon"></i>
+				</button>
+				<div class="faq-answer">
+					<p>Vous disposez de 30 jours pour retourner un produit physique si vous n'êtes pas satisfait. Le retour est gratuit et vous serez remboursé intégralement. Les produits numériques ne sont pas remboursables après téléchargement.</p>
+				</div>
+			</div>
+
+			<div class="faq-item">
+				<button class="faq-question">
+					<span><i class="fas fa-credit-card"></i> Quels moyens de paiement acceptez-vous ?</span>
+					<i class="fas fa-chevron-down faq-icon"></i>
+				</button>
+				<div class="faq-answer">
+					<p>Nous acceptons les cartes bancaires (Visa, Mastercard, American Express), PayPal, et Apple Pay. Tous les paiements sont sécurisés et cryptés.</p>
+				</div>
+			</div>
+
+			<div class="faq-item">
+				<button class="faq-question">
+					<span><i class="fas fa-shield-alt"></i> Mes informations sont-elles sécurisées ?</span>
+					<i class="fas fa-chevron-down faq-icon"></i>
+				</button>
+				<div class="faq-answer">
+					<p>Absolument ! Nous utilisons le protocole SSL pour crypter toutes vos données. Vos informations personnelles et bancaires sont protégées selon les normes les plus strictes de sécurité.</p>
+				</div>
+			</div>
+
+			<div class="faq-item">
+				<button class="faq-question">
+					<span><i class="fas fa-headset"></i> Comment contacter le support client ?</span>
+					<i class="fas fa-chevron-down faq-icon"></i>
+				</button>
+				<div class="faq-answer">
+					<p>Notre équipe est disponible 24/7 par email à contact@ecom.fr, par téléphone au +33 1 23 45 67 89, ou via le chat en direct sur notre site. Nous répondons généralement en moins de 2 heures.</p>
+				</div>
+			</div>
+
+			<div class="faq-item">
+				<button class="faq-question">
+					<span><i class="fas fa-gift"></i> Proposez-vous des codes promo ?</span>
+					<i class="fas fa-chevron-down faq-icon"></i>
+				</button>
+				<div class="faq-answer">
+					<p>Oui ! Inscrivez-vous à notre newsletter pour recevoir des codes promo exclusifs et être informé en avant-première de nos promotions. Vous recevrez 10% de réduction sur votre première commande.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<script src="{% static 'js/filter.js' %}"></script>
+	<script src="{% static 'js/faq.js' %}"></script>
 {% endblock content %}
