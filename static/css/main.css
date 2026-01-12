@@ -16,6 +16,14 @@ body{
 	border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
+/* Container dans le footer sans background */
+.footer-section .container {
+	background: transparent;
+	box-shadow: none;
+	border: none;
+	backdrop-filter: none;
+}
+
 h1,h2,h3,h4,h5,h6{
 	color: #2d3748;
 	font-weight: 700;
