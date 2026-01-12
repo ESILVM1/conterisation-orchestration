@@ -7,8 +7,67 @@
 		<p class="hero-subtitle">Des produits de qualité sélectionnés avec soin pour vous</p>
 	</div>
 
+	<!-- Search and Filter Section -->
+	<div class="search-filter-section">
+		<div class="search-container">
+			<div class="search-box">
+				<i class="fas fa-search search-icon"></i>
+				<input type="text" id="searchInput" class="search-input" placeholder="Rechercher un produit...">
+				<button class="search-clear" id="clearSearch" title="Effacer">
+					<i class="fas fa-times"></i>
+				</button>
+			</div>
+		</div>
+		
+		<div class="filter-container">
+			<div class="filter-group">
+				<label class="filter-label">
+					<i class="fas fa-filter"></i> Catégorie:
+				</label>
+				<select id="categoryFilter" class="filter-select">
+					<option value="all">Toutes les catégories</option>
+					<option value="digital">Produits numériques</option>
+					<option value="physical">Produits physiques</option>
+				</select>
+			</div>
+			
+			<div class="filter-group">
+				<label class="filter-label">
+					<i class="fas fa-sort-amount-down"></i> Prix:
+				</label>
+				<select id="priceFilter" class="filter-select">
+					<option value="all">Tous les prix</option>
+					<option value="low">Moins de $20</option>
+					<option value="medium">$20 - $50</option>
+					<option value="high">Plus de $50</option>
+				</select>
+			</div>
+			
+			<div class="filter-group">
+				<label class="filter-label">
+					<i class="fas fa-sort"></i> Trier par:
+				</label>
+				<select id="sortFilter" class="filter-select">
+					<option value="default">Par défaut</option>
+					<option value="name-asc">Nom (A-Z)</option>
+					<option value="name-desc">Nom (Z-A)</option>
+					<option value="price-asc">Prix croissant</option>
+					<option value="price-desc">Prix décroissant</option>
+				</select>
+			</div>
+			
+			<button class="btn btn-outline-secondary btn-reset" id="resetFilters">
+				<i class="fas fa-redo"></i> Réinitialiser
+			</button>
+		</div>
+		
+		<div class="results-info">
+			<span id="resultsCount">Affichage de tous les produits</span>
+		</div>
+	</div>
+
 	<!-- Products Grid -->
-	<div class="row">
+	<div class="row" id="productsGrid">
 		{% for product in products %}
 		<div class="col-lg-4">
 			<div class="product-card">
@@ -74,4 +133,5 @@
 		{% endfor %}
 	</div>
 
+	<script src="{% static 'js/filter.js' %}"></script>
 {% endblock content %}
