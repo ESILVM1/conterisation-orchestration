@@ -1,0 +1,18 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /app/logs/*.log
+  multiline.pattern: '^{'
+  multiline.negate: true
+  multiline.match: after
+
+# Configure logstash output
+output.logstash:
+  hosts: ["logstash:5044"]
+
+# Setup Kibana (for dashboards)
+setup.kibana:
+  host: "kibana:5601"
+
+logging.level: info
