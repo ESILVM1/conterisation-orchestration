@@ -7,16 +7,8 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 import json
 import datetime
 import logging
-from .models import * 
-from .utils import cookieCart, cartData, guestOrder
-
-logger = logging.getLogger(__name__)
-
-def store(request):
-	data = cartData(request)
-
-	cartItems = data['cartItems']
-	order = data['order']
+import uuid
+from .models import Customer, Product, Order, OrderItem, ShippingAddress
 	items = data['items']
 
 	products = Product.objects.all()
@@ -120,7 +112,8 @@ def processOrder(request):
 	except json.JSONDecodeError:
 		return JsonResponse({'error': 'Invalid JSON'}, status=400)
 	
-	transaction_id = datetime.datetime.now().timestamp()
+# Use a UUID for transaction IDs to avoid collisions and predictability
+        transaction_id = str(uuid.uuid4())
 	
 	try:
 		if request.user.is_authenticated:
