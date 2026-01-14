@@ -17,8 +17,8 @@ def cookieCart(request):
 
 	items = []
 	order = {'get_cart_total': 0, 'get_cart_items': 0, 'shipping': False}
-	cartItems = order['get_cart_items']
-
+        # cartItems will be computed after processing items to avoid stale value
+        cartItems = 0
 	for product_id_str in cart:
 		try:
 			# Validate product ID is an integer
@@ -65,8 +65,8 @@ def cookieCart(request):
 			logger.warning(f"Invalid cart item {product_id_str}: {str(e)}")
 			continue
 			
-	return {'cartItems': cartItems, 'order': order, 'items': items}
-
+        # Update cartItems based on the order aggregation
+        cartItems = order['get_cart_items']
 def cartData(request):
 	"""Get cart data for authenticated or guest user"""
 	if request.user.is_authenticated:
