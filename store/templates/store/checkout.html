@@ -188,38 +188,58 @@
 		</div>
 	</div>
 
-	<script src="https://www.paypal.com/sdk/js?client-id=YOUR-CLIENT-ID&currency=USD&disable-funding=credit"></script>
+	<!-- PayPal SDK (optionnel - commenté en mode démo) -->
+	<!-- <script src="https://www.paypal.com/sdk/js?client-id=YOUR-CLIENT-ID&currency=USD&disable-funding=credit"></script> -->
 
 	<script>
 		var total = '{{order.get_cart_total}}'
-        // Render the PayPal button into #paypal-button-container
-        paypal.Buttons({
+		
+		// Vérifier si PayPal est disponible
+		if (typeof paypal !== 'undefined') {
+			// Render the PayPal button into #paypal-button-container
+			paypal.Buttons({
+				style: {
+					color:  'blue',
+					shape:  'rect',
+				},
 
-        	style: {
-                color:  'blue',
-                shape:  'rect',
-            },
+				// Set up the transaction
+				createOrder: function(data, actions) {
+					return actions.order.create({
+						purchase_units: [{
+							amount: {
+								value:parseFloat(total).toFixed(2)
+							}
+						}]
+					});
+				},
 
-            // Set up the transaction
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            value:parseFloat(total).toFixed(2)
-                        }
-                    }]
-                });
-            },
+				// Finalize the transaction
+				onApprove: function(data, actions) {
+					return actions.order.capture().then(function(details) {
+						// Show a success message to the buyer
+						submitFormData()
+					});
+				}
 
-            // Finalize the transaction
-            onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    // Show a success message to the buyer
-                    submitFormData()
-                });
-            }
-
-        }).render('#paypal-button-container');
+			}).render('#paypal-button-container');
+		} else {
+			// Mode démo sans PayPal
+			console.log('PayPal SDK non chargé - Mode démo');
+			var paypalContainer = document.getElementById('paypal-button-container');
+			if (paypalContainer) {
+				paypalContainer.innerHTML = `
+					<div style="padding: 20px; background: #f0f4ff; border: 2px dashed #667eea; border-radius: 10px; text-align: center;">
+						<i class="fas fa-info-circle" style="font-size: 2rem; color: #667eea; margin-bottom: 10px;"></i>
+						<p style="color: #2d3748; font-weight: 600; margin: 10px 0;">Mode Démonstration</p>
+						<p style="color: #718096; font-size: 0.9rem; margin: 5px 0;">PayPal non configuré. Utilisez le bouton "Continuer vers le paiement" ci-dessus.</p>
+						<button onclick="submitFormData()" class="btn btn-success" style="margin-top: 15px;">
+							<i class="fas fa-check-circle"></i> Valider la commande (Démo)
+						</button>
+					</div>
+				`;
+			}
+		}
     </script>
 
 	<script type="text/javascript">
