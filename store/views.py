@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib import messages
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
@@ -197,3 +199,36 @@ def processOrder(request):
 		'message': 'Payment submitted',
 		'transaction_id': transaction_id
 	}, status=200)
+
+def loginPage(request):
+	"""Handle user login"""
+	if request.user.is_authenticated:
+		return redirect('store')
+	
+	if request.method == 'POST':
+		username = request.POST.get('username')
+		password = request.POST.get('password')
+		
+		if not username or not password:
+			messages.error(request, 'Veuillez remplir tous les champs')
+			return render(request, 'store/login.html')
+		
+		user = authenticate(request, username=username, password=password)
+		
+		if user is not None:
+			auth_login(request, user)
+			messages.success(request, f'Bienvenue {user.username} !')
+			
+			# Redirect to next page or store
+			next_page = request.GET.get('next', 'store')
+			return redirect(next_page)
+		else:
+			messages.error(request, 'Nom d\'utilisateur ou mot de passe incorrect')
+	
+	return render(request, 'store/login.html')
+
+def logoutUser(request):
+	"""Handle user logout"""
+	auth_logout(request)
+	messages.success(request, 'Vous avez été déconnecté avec succès')
+	return redirect('login')

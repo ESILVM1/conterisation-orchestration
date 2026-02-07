@@ -6,9 +6,9 @@ services:
     container_name: ecommerce_web
     command: gunicorn --bind 0.0.0.0:8000 --workers 3 --timeout 120 ecommerce.wsgi:application
     volumes:
-      - static_volume:/app/staticfiles
-      - media_volume:/app/static/images
-      - db_data:/app/db
+      - static_volume:/app/staticfiles:rw
+      - media_volume:/app/static/images:rw
+      - db_data:/app/db:rw
     ports:
       - "8000:8000"
     networks:
@@ -23,7 +23,7 @@ services:
       - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - static_volume:/static:ro
+      - static_volume:/app/staticfiles:ro
       - media_volume:/media:ro
     environment:
       - NGINX_ENTRYPOINT_QUIET_LOGS=1

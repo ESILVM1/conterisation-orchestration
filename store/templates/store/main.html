@@ -77,7 +77,18 @@
 	 
 	    </ul>
 	    <div class="form-inline my-2 my-lg-0">
-	     	<a href="#"class="btn btn-warning">Login</a>
+	     	{% if request.user.is_authenticated %}
+	     		<span class="navbar-text user-welcome">
+	     			<i class="fas fa-user-circle"></i> Bonjour, <strong>{{ request.user.username }}</strong>
+	     		</span>
+	     		<a href="{% url 'logout' %}" class="btn btn-outline-danger" style="margin-left: 10px;">
+	     			<i class="fas fa-sign-out-alt"></i> Déconnexion
+	     		</a>
+	     	{% else %}
+	     		<a href="{% url 'login' %}" class="btn btn-primary" style="margin-right: 10px;">
+	     			<i class="fas fa-sign-in-alt"></i> Connexion
+	     		</a>
+	     	{% endif %}
 	     	
 	     	<a href="{% url 'cart' %}">
 	    		<img  id="cart-icon" src="{% static 'images/cart.png' %}">
