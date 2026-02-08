@@ -102,7 +102,10 @@ Pour compléter l'observabilité applicative (Logs), une solution de monitoring 
 ## 🔗 Accéder au dépôt Monitoring : ```https://github.com/rdout2/Monitoring_Grafana_prometheus```
 
 ### 📸 Captures d'écran
-
+<img src="./static/images_screen/3.png"/>
+<img src="./static/images_screen/33.png"/>
+<img src="./static/images_screen/333.png"/>
+<img src="./static/images_screen/3333.png"/>
 ### Structure du Projet
 ```text
 
