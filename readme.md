@@ -45,13 +45,16 @@ L'application est décomposée en services interconnectés :
 * Au moins 4GB de RAM allouée à Docker
 
 ### 1. Cloner le projet
+
 ```bash
 git clone [https://github.com/ESILVM1/conterisation-orchestration.git](https://github.com/ESILVM1/conterisation-orchestration.git)
-cd django_ecommerce_mod5```
+cd django_ecommerce_mod5
+```
 
 ### 2. Lancer l'environnement
 
-```docker compose up -d --build```
+```docker compose up -d --build
+```
 Note : Le démarrage initial d'Elasticsearch et Kibana peut prendre 2 à 3 minutes.
 
 ### 3 Vérifier l'état des services
