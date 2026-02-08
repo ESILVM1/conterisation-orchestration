@@ -107,8 +107,8 @@ Pour compléter l'observabilité applicative (Logs), une solution de monitoring 
 <img src="./static/images_screen/333.png"/>
 <img src="./static/images_screen/3333.png"/>
 ### Structure du Projet
-```text
 
+```text
 django_ecommerce_mod5/
 ├── docker-compose.yml          # Orchestration des services
 ├── Dockerfile                  # Construction de l'image Django
