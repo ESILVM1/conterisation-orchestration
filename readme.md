@@ -49,7 +49,7 @@ L'application est décomposée en services interconnectés :
 git clone [https://github.com/ESILVM1/conterisation-orchestration.git](https://github.com/ESILVM1/conterisation-orchestration.git)
 cd django_ecommerce_mod5
 
-### 1. Cloner le projet
+### 2. Lancer l'environnement
 
 cette partie la dans un seul md que je copie et colle 2. Lancer l'environnement
 Bash
