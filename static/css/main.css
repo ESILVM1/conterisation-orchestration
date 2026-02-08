@@ -2,18 +2,44 @@ body{
 	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 	min-height: 100vh;
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	scroll-behavior: smooth;
+	position: relative;
+}
+
+/* Scroll bar styling */
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+::-webkit-scrollbar-track {
+	background: rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: linear-gradient(135deg, #5568d3 0%, #653a8b 100%);
 }
 
 /* Container principal avec effet glassmorphism */
 .container{
 	background: rgba(255, 255, 255, 0.95);
-	border-radius: 20px;
-	padding: 30px;
-	margin-top: 20px;
-	margin-bottom: 20px;
+	border-radius: 25px;
+	padding: 40px;
+	margin-top: 30px;
+	margin-bottom: 30px;
 	box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 	backdrop-filter: blur(4px);
 	border: 1px solid rgba(255, 255, 255, 0.18);
+	transition: all 0.3s ease;
+}
+
+.container:hover {
+	box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45);
 }
 
 /* Container dans le footer sans background */
@@ -119,14 +145,21 @@ h1 {
 }
 
 #cart-icon{
-	width:28px;
+	width:32px;
 	display: inline-block;
 	margin-left: 15px;
-	transition: transform 0.3s ease;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	position: relative;
+	filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.1));
 }
 
 #cart-icon:hover{
-	transform: scale(1.1);
+	transform: scale(1.25) rotate(15deg);
+	filter: drop-shadow(0 5px 15px rgba(255, 255, 255, 0.4));
+}
+
+#cart-icon:active {
+	transform: scale(0.95);
 }
 
 #cart-total{
@@ -735,11 +768,20 @@ h1 {
 /* Navbar enhancements */
 .navbar {
 	transition: all 0.3s ease;
+	position: relative;
+	z-index: 100;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.navbar:hover {
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 .nav-link {
 	position: relative;
 	transition: all 0.3s ease;
+	font-weight: 500;
+	letter-spacing: 0.5px;
 }
 
 .nav-link::after {
@@ -748,19 +790,28 @@ h1 {
 	bottom: 0;
 	left: 50%;
 	width: 0;
-	height: 2px;
+	height: 3px;
 	background: white;
 	transform: translateX(-50%);
 	transition: width 0.3s ease;
+	border-radius: 2px;
 }
 
 .nav-link:hover::after {
 	width: 80%;
 }
 
+.nav-link:hover {
+	color: #ffffff !important;
+	transform: translateY(-2px);
+}
+
 .navbar-brand {
 	transition: all 0.3s ease;
 	position: relative;
+	font-weight: 800;
+	letter-spacing: 2px;
+	text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .navbar-brand:hover {
