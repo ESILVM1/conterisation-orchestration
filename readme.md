@@ -85,7 +85,7 @@ Site E-commerce : http://localhost
 Kibana (Dashboard) : http://localhost:5601
 Configuration Rapide de Kibana
 Ouvrez http://localhost:5601.
-Allez dans Stack Management > Index Patterns.
+Allez dans Stack Management > Index Patterns(Data View).
 Créez un pattern nommé nginx-logs-*.
 Sélectionnez @timestamp comme champ temporel.
 ```
