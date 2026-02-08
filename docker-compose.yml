@@ -25,6 +25,7 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - static_volume:/app/staticfiles:ro
       - media_volume:/media:ro
+      - nginx_logs:/var/log/nginx
     environment:
       - NGINX_ENTRYPOINT_QUIET_LOGS=1
     depends_on:
@@ -33,10 +34,75 @@ services:
       - ecommerce_network
     restart: unless-stopped
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: ecommerce_elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./elk/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+      - es_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - ecommerce_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: ecommerce_kibana
+    volumes:
+      - ./elk/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+    ports:
+      - "5601:5601"
+    networks:
+      - ecommerce_network
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5601/api/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.11.0
+    container_name: ecommerce_filebeat
+    user: root
+    volumes:
+      - ./elk/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - nginx_logs:/var/log/nginx:ro
+      - filebeat_data:/usr/share/filebeat/data
+    networks:
+      - ecommerce_network
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      nginx:
+        condition: service_started
+    restart: unless-stopped
+
 volumes:
   db_data:
   static_volume:
   media_volume:
+  es_data:
+  filebeat_data:
+  nginx_logs:
 
 networks:
   ecommerce_network:
