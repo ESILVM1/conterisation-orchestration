@@ -6,4 +6,14 @@ db.sqlite3
 security.log
 *.log
 .DS_Store
-*.md
+
+# Test coverage
+htmlcov/
+.coverage
+coverage.xml
+.pytest_cache/
+.tox/
+
+# IDE
+.vscode/
+.idea/
