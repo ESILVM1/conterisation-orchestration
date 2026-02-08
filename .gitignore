@@ -17,3 +17,8 @@ coverage.xml
 # IDE
 .vscode/
 .idea/
+
+# Prevent specific markdown files from being pushed to the remote repository
+ELK_SETUP.md
+README_TESTS.md
+readme.md
