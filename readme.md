@@ -45,32 +45,28 @@ L'application est décomposée en services interconnectés :
 * Au moins 4GB de RAM allouée à Docker
 
 ### 1. Cloner le projet
-```bash
+bash
 git clone [https://github.com/ESILVM1/conterisation-orchestration.git](https://github.com/ESILVM1/conterisation-orchestration.git)
 cd django_ecommerce_mod5
 
 ### 2. Lancer l'environnement
 
-cette partie la dans un seul md que je copie et colle 2. Lancer l'environnement
-Bash
-
 docker compose up -d --build
 Note : Le démarrage initial d'Elasticsearch et Kibana peut prendre 2 à 3 minutes.
 
-3. Vérifier l'état des services
-Bash
+### 3 Vérifier l'état des services
 
 docker compose ps
-4. Initialiser les données de démo (Optionnel)
+
+### 4. Initialiser les données de démo (Optionnel)
 Un script Python est inclus pour peupler la base de données avec des produits et un utilisateur test :
-Bash
 
 docker compose exec web python load_demo_data.py
 Admin Panel : https://www.google.com/search?q=http://localhost/admin (User: admin / Pass: admin123)
-📊 Utilisation de la Stack ELK
+## Utilisation de la Stack ELK
 L'architecture de logging suit le flux : Nginx (JSON) ➔ Filebeat ➔ Elasticsearch ➔ Kibana.
 
-Accès aux interfaces
+## Accès aux interfaces
 Site E-commerce : http://localhost
 Kibana (Dashboard) : http://localhost:5601
 Configuration Rapide de Kibana
@@ -78,17 +74,18 @@ Ouvrez http://localhost:5601.
 Allez dans Stack Management > Index Patterns.
 Créez un pattern nommé nginx-logs-*.
 Sélectionnez @timestamp comme champ temporel.
-🚦 Génération de Trafic de Test
+## Génération de Trafic de Test
 Pour visualiser des données intéressantes dans Kibana, utilisez le script fourni qui simule des visiteurs, des erreurs 404 et des accès aux ressources statiques :
 Bash
 
 chmod +x generate_traffic.sh
 ./generate_traffic.sh
 Une fois le script exécuté, rendez-vous dans l'onglet Discover ou Dashboard de Kibana pour analyser les résultats.
-📈 Monitoring Système (Bonus)
+### Monitoring Système (Bonus)
 Pour compléter l'observabilité applicative (Logs), une solution de monitoring système (Métriques CPU/RAM) a été mise en place via Prometheus et Grafana.
-🔗 Accéder au dépôt Monitoring : https://github.com/rdout2/Monitoring_Grafana_prometheus
-📸 Captures d'écran
+## 🔗 Accéder au dépôt Monitoring : https://github.com/rdout2/Monitoring_Grafana_prometheus
+
+### 📸 Captures d'écran
 1. Vue d'ensemble des services (Docker)
 (Insérer ici un screenshot de votre terminal avec la commande docker compose ps montrant tous les services UP)
 
@@ -111,5 +108,5 @@ django_ecommerce_mod5/
 │   ├── kibana/config.yml
 │   └── filebeat/config.yml
 └── store/                      # Code source de l'application Django
-👤 Auteur
-Projet réalisé par Ahmat ROUCHAD dans le cadre du Master 1 à l'ESILV.
+### 👤 Auteur
+Projet réalisé par **Ahmat ROUCHAD** dans le cadre du Master 1 à l'ESILV.
