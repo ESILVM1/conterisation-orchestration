@@ -103,19 +103,15 @@
 						<span>Vos informations sont sécurisées et cryptées</span>
 					</div>
 
-					<button id="form-button" class="btn btn-success btn-block btn-continue" type="submit">
-						<i class="fas fa-arrow-right"></i> Continuer vers le paiement
-					</button>
+					<a href="{% url 'payment' %}" class="btn btn-success btn-block btn-continue">
+						<i class="fas fa-credit-card"></i> Continuer vers le paiement
+					</a>
 				</form>
 			</div>
 
 			<br>
-			<div class="box-element payment-section hidden" id="payment-info">
-				<h5 class="payment-title">
-					<i class="fas fa-credit-card"></i> Options de paiement
-				</h5>
-				<p class="payment-subtitle">Sélectionnez votre méthode de paiement</p>
-				<div id="paypal-button-container"></div>
+			<div class="box-element payment-section" style="display: none;">
+				<p>Redirection vers la page de paiement sécurisée...</p>
 			</div>
 			
 		</div>

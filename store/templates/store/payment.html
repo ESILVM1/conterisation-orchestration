@@ -1,0 +1,242 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="payment-container">
+	<div class="payment-wrapper">
+		<!-- Progress Bar -->
+		<div class="checkout-progress" style="margin-bottom: 30px;">
+			<div class="progress-container">
+				<div class="progress-step completed">
+					<div class="step-circle"><i class="fas fa-shopping-cart"></i></div>
+					<span class="step-label">Panier</span>
+				</div>
+				<div class="progress-line completed"></div>
+				<div class="progress-step completed">
+					<div class="step-circle"><i class="fas fa-clipboard-list"></i></div>
+					<span class="step-label">Informations</span>
+				</div>
+				<div class="progress-line completed"></div>
+				<div class="progress-step active">
+					<div class="step-circle"><i class="fas fa-credit-card"></i></div>
+					<span class="step-label">Paiement</span>
+				</div>
+				<div class="progress-line"></div>
+				<div class="progress-step">
+					<div class="step-circle"><i class="fas fa-check-circle"></i></div>
+					<span class="step-label">Confirmation</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<!-- Payment Form -->
+			<div class="col-lg-7">
+				<div class="payment-card">
+					<h3 class="payment-title">
+						<i class="fas fa-credit-card"></i> Informations de paiement
+					</h3>
+					
+					<!-- Demo Info -->
+					<div class="demo-payment-info">
+						<div class="demo-header">
+							<i class="fas fa-info-circle"></i>
+							<strong>Mode Démonstration</strong>
+						</div>
+						<p class="demo-instructions">
+							✅ <strong>Pour simuler un paiement réussi :</strong><br>
+							Utilisez n'importe quel numéro de carte (ex: 4242 4242 4242 4242)
+						</p>
+						<p class="demo-instructions error">
+							❌ <strong>Pour simuler un échec de paiement :</strong><br>
+							Utilisez le numéro : <code>0000 0000 0000 0000</code>
+						</p>
+					</div>
+
+					<form id="payment-form" method="POST" action="{% url 'process_payment' %}">
+						{% csrf_token %}
+						
+						<!-- Card Number -->
+						<div class="form-group-payment">
+							<label for="card_number">
+								<i class="fas fa-credit-card"></i> Numéro de carte
+							</label>
+							<input 
+								type="text" 
+								id="card_number"
+								name="card_number"
+								class="form-control-payment" 
+								placeholder="1234 5678 9012 3456"
+								maxlength="19"
+								required
+								autocomplete="cc-number"
+							>
+							<div class="card-icons">
+								<i class="fab fa-cc-visa"></i>
+								<i class="fab fa-cc-mastercard"></i>
+								<i class="fab fa-cc-amex"></i>
+							</div>
+						</div>
+
+						<!-- Card Holder Name -->
+						<div class="form-group-payment">
+							<label for="card_holder">
+								<i class="fas fa-user"></i> Nom du titulaire
+							</label>
+							<input 
+								type="text" 
+								id="card_holder"
+								name="card_holder"
+								class="form-control-payment" 
+								placeholder="JEAN DUPONT"
+								required
+								autocomplete="cc-name"
+								style="text-transform: uppercase;"
+							>
+						</div>
+
+						<div class="row">
+							<!-- Expiry Date -->
+							<div class="col-md-6">
+								<div class="form-group-payment">
+									<label for="expiry">
+										<i class="fas fa-calendar-alt"></i> Date d'expiration
+									</label>
+									<input 
+										type="text" 
+										id="expiry"
+										name="expiry"
+										class="form-control-payment" 
+										placeholder="MM/AA"
+										maxlength="5"
+										required
+										autocomplete="cc-exp"
+									>
+								</div>
+							</div>
+
+							<!-- CVV -->
+							<div class="col-md-6">
+								<div class="form-group-payment">
+									<label for="cvv">
+										<i class="fas fa-lock"></i> CVV
+									</label>
+									<input 
+										type="text" 
+										id="cvv"
+										name="cvv"
+										class="form-control-payment" 
+										placeholder="123"
+										maxlength="4"
+										required
+										autocomplete="cc-csc"
+									>
+									<small class="cvv-help">
+										<i class="fas fa-question-circle"></i> 3 chiffres au dos
+									</small>
+								</div>
+							</div>
+						</div>
+
+						<!-- Security Badge -->
+						<div class="security-payment-badge">
+							<i class="fas fa-shield-alt"></i>
+							<div>
+								<strong>Paiement 100% sécurisé</strong>
+								<p>Vos informations sont cryptées SSL 256-bit</p>
+							</div>
+						</div>
+
+						<!-- Submit Button -->
+						<button type="submit" class="btn-pay-now" id="pay-button">
+							<i class="fas fa-lock"></i> Payer {{ order.get_cart_total|floatformat:2 }}€
+						</button>
+					</form>
+
+					<div class="payment-footer-info">
+						<a href="{% url 'checkout' %}" class="btn-back-payment">
+							<i class="fas fa-arrow-left"></i> Retour aux informations
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<!-- Order Summary -->
+			<div class="col-lg-5">
+				<div class="order-summary-payment">
+					<h4>
+						<i class="fas fa-receipt"></i> Récapitulatif de la commande
+					</h4>
+					
+					<div class="summary-items">
+						{% for item in items %}
+						<div class="summary-item">
+							<img src="{{ item.product.imageURL }}" alt="{{ item.product.name }}">
+							<div class="summary-item-details">
+								<p class="summary-item-name">{{ item.product.name }}</p>
+								<p class="summary-item-qty">Qté: {{ item.quantity }}</p>
+							</div>
+							<p class="summary-item-price">${{ item.get_total|floatformat:2 }}</p>
+						</div>
+						{% endfor %}
+					</div>
+
+					<div class="summary-totals">
+						<div class="summary-row">
+							<span>Sous-total</span>
+							<strong>${{ order.get_cart_total|floatformat:2 }}</strong>
+						</div>
+						<div class="summary-row">
+							<span>Livraison</span>
+							<strong class="text-success">GRATUITE</strong>
+						</div>
+						<div class="summary-row total-row">
+							<span>Total à payer</span>
+							<h3>${{ order.get_cart_total|floatformat:2 }}</h3>
+						</div>
+					</div>
+
+					<div class="payment-trust-badges">
+						<div class="trust-badge-item">
+							<i class="fas fa-lock"></i>
+							<span>SSL Sécurisé</span>
+						</div>
+						<div class="trust-badge-item">
+							<i class="fas fa-shield-alt"></i>
+							<span>Garanti</span>
+						</div>
+						<div class="trust-badge-item">
+							<i class="fas fa-undo"></i>
+							<span>Remboursement</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+// Format card number
+document.getElementById('card_number').addEventListener('input', function(e) {
+	let value = e.target.value.replace(/\s/g, '');
+	let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+	e.target.value = formattedValue;
+});
+
+// Format expiry date
+document.getElementById('expiry').addEventListener('input', function(e) {
+	let value = e.target.value.replace(/\D/g, '');
+	if (value.length >= 2) {
+		value = value.slice(0, 2) + '/' + value.slice(2, 4);
+	}
+	e.target.value = value;
+});
+
+// Only numbers for CVV
+document.getElementById('cvv').addEventListener('input', function(e) {
+	e.target.value = e.target.value.replace(/\D/g, '');
+});
+</script>
+
+{% endblock content %}

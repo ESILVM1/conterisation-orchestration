@@ -232,3 +232,97 @@ def logoutUser(request):
 	auth_logout(request)
 	messages.success(request, 'Vous avez été déconnecté avec succès')
 	return redirect('login')
+
+def payment(request):
+	"""Display payment page"""
+	data = cartData(request)
+	
+	cartItems = data['cartItems']
+	order = data['order']
+	items = data['items']
+	
+	# Redirect if cart is empty
+	if cartItems == 0:
+		messages.warning(request, 'Votre panier est vide')
+		return redirect('cart')
+	
+	context = {'items': items, 'order': order, 'cartItems': cartItems}
+	return render(request, 'store/payment.html', context)
+
+@require_http_methods(["POST"])
+@csrf_protect
+def processPayment(request):
+	"""Process payment with card simulation"""
+	try:
+		card_number = request.POST.get('card_number', '').replace(' ', '')
+		card_holder = request.POST.get('card_holder', '')
+		expiry = request.POST.get('expiry', '')
+		cvv = request.POST.get('cvv', '')
+		
+		# Validate fields
+		if not all([card_number, card_holder, expiry, cvv]):
+			messages.error(request, 'Veuillez remplir tous les champs')
+			return redirect('payment')
+		
+		# Simulate payment failure for specific card number
+		if card_number == '0000000000000000':
+			messages.error(request, '❌ Paiement refusé ! Carte invalide ou fonds insuffisants.')
+			logger.warning(f"Payment failed simulation for card: {card_number}")
+			return redirect('payment')
+		
+		# Process order for successful payment
+		data = cartData(request)
+		order = data['order']
+		
+		if order.get_cart_total <= 0:
+			messages.error(request, 'Votre panier est vide')
+			return redirect('cart')
+		
+		# Create transaction
+		transaction_id = datetime.datetime.now().timestamp()
+		order.transaction_id = str(transaction_id)
+		order.complete = True
+		order.save()
+		
+		# Store order info in session for confirmation page
+		request.session['last_order'] = {
+			'transaction_id': str(int(transaction_id)),
+			'total': str(order.get_cart_total),
+			'items_count': order.get_cart_items
+		}
+		
+		logger.info(f"Payment successful for order: {transaction_id}")
+		messages.success(request, '✅ Paiement réussi ! Votre commande a été confirmée.')
+		
+		return redirect('order_success')
+		
+	except Exception as e:
+		logger.error(f"Error processing payment: {str(e)}")
+		messages.error(request, 'Une erreur est survenue lors du paiement')
+		return redirect('payment')
+
+def orderSuccess(request):
+	"""Display order confirmation page"""
+	# Get order info from session
+	order_info = request.session.get('last_order')
+	
+	if not order_info:
+		messages.warning(request, 'Aucune commande récente trouvée')
+		return redirect('store')
+	
+	# Clear cart cookie
+	response = render(request, 'store/order_success.html', {
+		'transaction_id': order_info.get('transaction_id'),
+		'total': order_info.get('total'),
+		'items_count': order_info.get('items_count'),
+		'date': datetime.datetime.now().strftime('%d/%m/%Y à %H:%M')
+	})
+	
+	# Clear cart
+	response.set_cookie('cart', '{}')
+	
+	# Clear session order
+	if 'last_order' in request.session:
+		del request.session['last_order']
+	
+	return response
