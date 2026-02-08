@@ -6,4 +6,19 @@ db.sqlite3
 security.log
 *.log
 .DS_Store
-*.md
+
+# Test coverage
+htmlcov/
+.coverage
+coverage.xml
+.pytest_cache/
+.tox/
+
+# IDE
+.vscode/
+.idea/
+
+# Prevent specific markdown files from being pushed to the remote repository
+ELK_SETUP.md
+README_TESTS.md
+readme.md

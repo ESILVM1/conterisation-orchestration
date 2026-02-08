@@ -12,3 +12,8 @@ Pillow==9.5.0
 
 # Service des fichiers statiques
 whitenoise==6.2.0
+
+# Testing
+coverage==7.3.2
+pytest==7.4.3
+pytest-django==4.7.0
