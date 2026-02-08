@@ -1,0 +1,7 @@
+cluster.name: "ecommerce-logs"
+network.host: 0.0.0.0
+http.port: 9200
+
+# Optimisations pour ressources limitées
+indices.memory.index_buffer_size: 20%
+indices.queries.cache.size: 5%

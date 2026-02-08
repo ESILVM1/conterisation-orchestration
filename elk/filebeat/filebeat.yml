@@ -1,18 +1,28 @@
 filebeat.inputs:
-- type: log
-  enabled: true
-  paths:
-    - /app/logs/*.log
-  multiline.pattern: '^{'
-  multiline.negate: true
-  multiline.match: after
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/nginx/access.log
+    json.keys_under_root: true
+    json.add_error_key: true
+    tags: ["nginx", "access"]
+    
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/nginx/error.log
+    tags: ["nginx", "error"]
 
-# Configure logstash output
-output.logstash:
-  hosts: ["logstash:5044"]
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  index: "nginx-logs-%{+yyyy.MM.dd}"
 
-# Setup Kibana (for dashboards)
 setup.kibana:
   host: "kibana:5601"
 
+setup.ilm.enabled: false
+setup.template.name: "nginx"
+setup.template.pattern: "nginx-*"
+
 logging.level: info
+logging.to_files: true
