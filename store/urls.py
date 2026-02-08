@@ -10,5 +10,14 @@ urlpatterns = [
 
 	path('update_item/', views.updateItem, name="update_item"),
 	path('process_order/', views.processOrder, name="process_order"),
+	
+	# Authentication
+	path('login/', views.loginPage, name="login"),
+	path('logout/', views.logoutUser, name="logout"),
+	
+	# Payment
+	path('payment/', views.payment, name="payment"),
+	path('process_payment/', views.processPayment, name="process_payment"),
+	path('order-success/', views.orderSuccess, name="order_success"),
 
 ]

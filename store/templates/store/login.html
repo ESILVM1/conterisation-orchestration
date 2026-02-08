@@ -1,0 +1,102 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="login-container">
+	<div class="login-card">
+		<!-- Logo/Icon -->
+		<div class="login-icon">
+			<i class="fas fa-user-circle"></i>
+		</div>
+		
+		<h2 class="login-title">Connexion</h2>
+		<p class="login-subtitle">Bienvenue ! Connectez-vous à votre compte</p>
+		
+		<!-- Messages d'erreur -->
+		{% if messages %}
+			{% for message in messages %}
+				<div class="alert alert-{{ message.tags }}">
+					<i class="fas fa-exclamation-circle"></i>
+					{{ message }}
+				</div>
+			{% endfor %}
+		{% endif %}
+		
+		<!-- Formulaire de connexion -->
+		<form method="POST" class="login-form">
+			{% csrf_token %}
+			
+			<div class="form-group-login">
+				<label for="username">
+					<i class="fas fa-user"></i> Nom d'utilisateur
+				</label>
+				<input 
+					type="text" 
+					name="username" 
+					id="username"
+					class="form-control-login" 
+					placeholder="Entrez votre nom d'utilisateur"
+					required
+					autofocus
+				>
+			</div>
+			
+			<div class="form-group-login">
+				<label for="password">
+					<i class="fas fa-lock"></i> Mot de passe
+				</label>
+				<input 
+					type="password" 
+					name="password" 
+					id="password"
+					class="form-control-login" 
+					placeholder="Entrez votre mot de passe"
+					required
+				>
+			</div>
+			
+			<div class="form-options">
+				<label class="remember-me">
+					<input type="checkbox" name="remember">
+					<span>Se souvenir de moi</span>
+				</label>
+				<a href="#" class="forgot-password">Mot de passe oublié ?</a>
+			</div>
+			
+			<button type="submit" class="btn-login">
+				<i class="fas fa-sign-in-alt"></i> Se connecter
+			</button>
+		</form>
+		
+		<!-- Informations de démo -->
+		<div class="demo-info">
+			<p class="demo-title">
+				<i class="fas fa-info-circle"></i> Comptes de démonstration
+			</p>
+			<div class="demo-accounts">
+				<div class="demo-account">
+					<strong>👤 Utilisateur :</strong>
+					<code>demo</code> / <code>demo123</code>
+				</div>
+				<div class="demo-account">
+					<strong>👨‍💼 Admin :</strong>
+					<code>admin</code> / <code>admin123</code>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Lien d'inscription -->
+		<div class="login-footer">
+			<p>Pas encore de compte ? <a href="#" class="register-link">Créer un compte</a></p>
+		</div>
+		
+		<!-- Retour à la boutique -->
+		<div class="back-to-store">
+			<a href="{% url 'store' %}" class="btn-back">
+				<i class="fas fa-arrow-left"></i> Retour à la boutique
+			</a>
+		</div>
+	</div>
+</div>
+
+{% endblock content %}
