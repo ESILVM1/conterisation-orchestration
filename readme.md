@@ -53,13 +53,16 @@ cd django_ecommerce_mod5
 
 ### 2. Lancer l'environnement
 
-```docker compose up -d --build
+```
+docker compose up -d --build
 ```
 Note : Le démarrage initial d'Elasticsearch et Kibana peut prendre 2 à 3 minutes.
 
 ### 3 Vérifier l'état des services
 
-```docker compose ps```
+```
+docker compose ps
+```
 
 ### 4. Initialiser les données de démo (Optionnel)
 Un script Python est inclus pour peupler la base de données avec des produits et un utilisateur test :
