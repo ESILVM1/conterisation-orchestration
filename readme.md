@@ -3,9 +3,9 @@
 > **Module :** Containerization & Orchestration  
 > **Enseignant référent :** Maxime CORDEIRO  
 > **Auteurs :** Ahmat ROUCHAD
->            Jean-eudes WANDJI
->            Mileina MALOU
->            Yobe GNADAME  
+>            ** Jean-eudes WANDJI
+>            ** Mileina MALOU
+>            ** Yobe GNADAME  
 > **Promotion :** ESILV M1
 
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
