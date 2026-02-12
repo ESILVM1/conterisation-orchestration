@@ -2,7 +2,10 @@
 
 > **Module :** Containerization & Orchestration  
 > **Enseignant référent :** Maxime CORDEIRO  
-> **Auteur :** Ahmat ROUCHAD  
+> **Auteurs :** Ahmat ROUCHAD
+>           ** Jean-eudes WANDJI
+>           ** Mileina MALOU
+>           ** Yobe GNADAME  
 > **Promotion :** ESILV M1
 
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
@@ -125,5 +128,5 @@ django_ecommerce_mod5/
 └── store/                      # Code source de l'application Django
 ```
 
-### 👤 Auteur
-Projet réalisé par **Ahmat ROUCHAD** dans le cadre du Master 1 à l'ESILV.
+### 👤 Auteurs
+Projet réalisé par **Ahmat ROUCHAD, Jean-eudes WANDJI, Mileina MALOU, Yobe GNADAME** dans le cadre du Master 1 à l'ESILV.
