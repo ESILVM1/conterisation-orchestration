@@ -20,15 +20,18 @@ Le projet intègre une **stack ELK (Elasticsearch, Kibana, Filebeat)** complète
 ## 🏗 Architecture Technique
 
 L'application est décomposée en services interconnectés :
-
 | Service | Rôle | Technologie |
-|---------|------|-------------|
+| :--- | :--- | :--- |
 | **WebApp** | Backend logique et API | Django (Gunicorn) |
 | **Database** | Persistance des données | PostgreSQL 15 |
 | **Nginx** | Reverse Proxy & Fichiers statiques | Nginx (Alpine) |
 | **Elasticsearch** | Moteur de recherche & Stockage logs | Elasticsearch 8.11 |
 | **Kibana** | Visualisation & Dashboards | Kibana 8.11 |
 | **Filebeat** | Collecteur de logs léger | Filebeat 8.11 |
+| **Prometheus** | Stockage et requêtage des métriques | Prometheus |
+| **Grafana** | Visualisation et création de Dashboards | Grafana |
+| **Node-Exporter** | Collecte des métriques du système hôte | Prometheus Exporter |
+| **cAdvisor** | Collecte des métriques des containers (CPU/RAM) | Google cAdvisor |
 
 ### Points Forts de l'implémentation
 * **Logs JSON :** Configuration Nginx personnalisée pour générer des logs au format JSON pur, facilitant l'ingestion.
