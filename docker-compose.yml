@@ -1,4 +1,5 @@
 services:
+  # --- APPLICATION DJANGO ---
   web:
     build:
       context: .
@@ -9,12 +10,15 @@ services:
       - static_volume:/app/staticfiles:rw
       - media_volume:/app/static/images:rw
       - db_data:/app/db:rw
+      - app_logs:/app/logs
     ports:
       - "8000:8000"
     networks:
       - ecommerce_network
+      - monitoring_bridge
     restart: unless-stopped
 
+  # --- SERVEUR WEB NGINX ---
   nginx:
     image: nginx:alpine
     container_name: ecommerce_nginx
@@ -26,71 +30,15 @@ services:
       - static_volume:/app/staticfiles:ro
       - media_volume:/media:ro
       - nginx_logs:/var/log/nginx
-    environment:
-      - NGINX_ENTRYPOINT_QUIET_LOGS=1
+      - app_logs:/app/logs
     depends_on:
       - web
     networks:
       - ecommerce_network
-    restart: unless-stopped
-    volumes:
-      - app_logs:/app/logs
-
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
-    container_name: elasticsearch
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
-    volumes:
-      - elk_data:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-    networks:
-      - ecommerce_network
+      - monitoring_bridge
     restart: unless-stopped
 
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.17.0
-    container_name: kibana
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
-    networks:
-      - ecommerce_network
-    restart: unless-stopped
-
-  logstash:
-    image: docker.elastic.co/logstash/logstash:7.17.0
-    container_name: logstash
-    ports:
-      - "5044:5044" # beats input
-      - "5000:5000" # tcp/json input
-    volumes:
-      - ./elk/logstash/pipeline:/usr/share/logstash/pipeline:ro
-    depends_on:
-      - elasticsearch
-    networks:
-      - ecommerce_network
-    restart: unless-stopped
-
-  filebeat:
-    image: docker.elastic.co/beats/filebeat:7.17.0
-    container_name: filebeat
-    user: root
-    volumes:
-      - app_logs:/var/log/ecommerce:ro
-      - ./elk/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-    depends_on:
-      - logstash
-    networks:
-      - ecommerce_network
-    restart: unless-stopped
-
+  # --- LOGGING: ELASTICSEARCH ---
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
     container_name: ecommerce_elasticsearch
@@ -110,6 +58,7 @@ services:
       - "9200:9200"
     networks:
       - ecommerce_network
+      - monitoring_bridge
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
@@ -117,6 +66,7 @@ services:
       timeout: 10s
       retries: 5
 
+  # --- LOGGING: KIBANA ---
   kibana:
     image: docker.elastic.co/kibana/kibana:8.11.0
     container_name: ecommerce_kibana
@@ -126,6 +76,7 @@ services:
       - "5601:5601"
     networks:
       - ecommerce_network
+      - monitoring_bridge
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -136,6 +87,24 @@ services:
       timeout: 10s
       retries: 5
 
+  # --- LOGGING: LOGSTASH ---
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.0
+    container_name: logstash
+    ports:
+      - "5044:5044"
+      - "5000:5000"
+    volumes:
+      - ./elk/logstash/pipeline:/usr/share/logstash/pipeline:ro
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - ecommerce_network
+      - monitoring_bridge
+    restart: unless-stopped
+
+  # --- LOGGING: FILEBEAT ---
   filebeat:
     image: docker.elastic.co/beats/filebeat:8.11.0
     container_name: ecommerce_filebeat
@@ -143,9 +112,11 @@ services:
     volumes:
       - ./elk/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
       - nginx_logs:/var/log/nginx:ro
+      - app_logs:/var/log/ecommerce:ro
       - filebeat_data:/usr/share/filebeat/data
     networks:
       - ecommerce_network
+      - monitoring_bridge
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -153,6 +124,31 @@ services:
         condition: service_started
     restart: unless-stopped
 
+  # --- MONITORING: CADVISOR ---
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.0
+    container_name: ecommerce_cadvisor
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro # <--- AJOUTÉ ICI
+    networks:
+      - ecommerce_network
+      - monitoring_bridge
+    restart: unless-stopped
+
+# --- RÉSEAUX ---
+networks:
+  ecommerce_network:
+    driver: bridge
+  monitoring_bridge:
+    external: true
+
+# --- VOLUMES ---
 volumes:
   db_data:
   static_volume:
@@ -160,7 +156,4 @@ volumes:
   es_data:
   filebeat_data:
   nginx_logs:
-
-networks:
-  ecommerce_network:
-    driver: bridge
+  app_logs:
